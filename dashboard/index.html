@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Radar — pre-token protocols ranked by implied value</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="mast">
+  <div class="mast-row">
+    <h1><span class="dot"></span>TOKEN RADAR</h1>
+    <p class="tag">Pre-token protocols, ranked by what a token would be worth if each protocol's record stayed as it is — and how to farm each one before it issues.</p>
+  </div>
+  <div class="chips" id="chips"></div>
+  <p class="src" id="src"></p>
+</header>
+
+<section class="method" aria-label="How the board prices a protocol">
+  <h2>How a row is priced <span class="modeltag" id="modeltag"></span></h2>
+  <div class="formula">implied value = TVL &times; peer multiple &times; growth factor &times; maturity factor</div>
+  <div class="method-grid">
+    <div><h3>Peer multiple</h3><p>The market's own price of a TVL dollar. For each category, take the protocols whose token already trades and divide market cap by TVL; the multiple is that category's <b>median</b> ratio (needs at least 4 peers, else the market-wide median). Clamped to 0.02&ndash;2.50 so no thin category runs away.</p></div>
+    <div><h3>Growth factor</h3><p>1 + (7-day TVL change, clamped to &minus;60%&hellip;+120%) &times; 0.5. A protocol adding TVL this week is priced up; one bleeding TVL is priced down, at half weight.</p></div>
+    <div><h3>Maturity factor</h3><p>0.60 rising to 1.00 over the first 1,095 days DefiLlama has tracked the protocol. A launch priced off three years of record is worth more than the same TVL priced off a month of it.</p></div>
+    <div><h3>Who is ranked</h3><p>Every protocol the snapshot's watchlist names, plus every other protocol that records no token and is not a product of one that trades (no exchange products, bridge or staking receipts, versioned pools). Protocols whose token already trades are never ranked &mdash; they sit in <i>Already live</i> at their real market caps, and they are the peers the multiples come from.</p></div>
+  </div>
+  <p class="fine">Every figure comes from the sealed snapshot; no name is priced by hand, and each row shows its own arithmetic. An implied value is this board's claim about a token that does not exist yet &mdash; the snapshot says a protocol <i>records</i> no token, which is DefiLlama's record, not proof none exists.</p>
+</section>
+
+<nav class="controls" aria-label="Board controls">
+  <input id="q" type="search" placeholder="Search name or slug" aria-label="Search name or slug">
+  <select id="cat" aria-label="Filter by category"></select>
+  <select id="chain" aria-label="Filter by chain"></select>
+  <label class="chk"><input id="wlonly" type="checkbox"> Watchlist only</label>
+  <label class="chk"><input id="earlyonly" type="checkbox"> Early only (below the $50M floor)</label>
+  <select id="sort" aria-label="Sort the board">
+    <option value="implied">Sort: implied value</option>
+    <option value="tvl">Sort: TVL</option>
+    <option value="change">Sort: 7-day change</option>
+    <option value="age">Sort: age</option>
+    <option value="name">Sort: name</option>
+  </select>
+  <div class="tabs" role="tablist">
+    <button id="tab-board" class="tab on" role="tab">Pre-token board</button>
+    <button id="tab-live" class="tab" role="tab">Already live</button>
+  </div>
+  <span class="count" id="count"></span>
+</nav>
+
+<section id="detail" class="detail" hidden></section>
+
+<main>
+  <table id="board" class="board" aria-label="Ranked pre-token protocols">
+    <thead><tr>
+      <th class="num">#</th><th>Protocol</th><th>Category</th><th>Chains</th>
+      <th class="num">TVL</th><th class="num">7d</th><th class="num">Age</th>
+      <th class="num">&times; Mult</th><th class="num">Implied value</th>
+    </tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <table id="livetable" class="board" aria-label="Protocols whose token already trades" hidden>
+    <thead><tr>
+      <th>Protocol</th><th>Symbol</th><th>Category</th>
+      <th class="num">TVL</th><th class="num">Market cap</th><th class="num">MCap / TVL</th><th class="num">7d</th>
+    </tr></thead>
+    <tbody id="liverows"></tbody>
+  </table>
+  <p class="empty" id="empty" hidden>No protocol matches those filters. Loosen one and the radar sweeps again.</p>
+</main>
+
+<footer>
+  <p>Farm plans are generated per protocol from its category, chains, TVL and age: the action, what it costs, and how long it takes. They are a starting brief, not financial advice &mdash; check the protocol's own site before moving funds, and never pay anyone to "unlock" an airdrop.</p>
+</footer>
+
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
